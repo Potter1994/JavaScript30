@@ -61,29 +61,53 @@
   <audio data-key="76" src="sounds/tink.wav"></audio>
 
   <script>
-    document.addEventListener('keydown', (e) => {
-      const currentKeyCode = e.which
-      const currentDiv = document.querySelector(`div[data-key="${currentKeyCode}"]`)
-      const currentRadio = document.querySelector(`audio[data-key="${currentKeyCode}"]`)
+    // document.addEventListener('keydown', (e) => {
+    //   const currentKeyCode = e.which
+    //   const currentDiv = document.querySelector(`div[data-key="${currentKeyCode}"]`)
+    //   const currentRadio = document.querySelector(`audio[data-key="${currentKeyCode}"]`)
 
-      if (currentDiv) {
-        currentDiv.classList.add('playing')
-      }
+    //   if (currentDiv) {
+    //     currentDiv.classList.add('playing')
+    //   }
 
-      if (currentRadio) {
-        currentRadio.currentTime = 0
-        currentRadio.play()
-      }
-    })
+    //   if (currentRadio) {
+    //     currentRadio.currentTime = 0
+    //     currentRadio.play()
+    //   }
+    // })
 
-    document.addEventListener('keyup', (e) => {
-      const currentKeyCode = e.which
-      const currentDiv = document.querySelector(`div[data-key="${currentKeyCode}"]`)
+    // document.addEventListener('keyup', (e) => {
+    //   const currentKeyCode = e.which
+    //   const currentDiv = document.querySelector(`div[data-key="${currentKeyCode}"]`)
 
-      if (currentDiv) {
-        currentDiv.classList.remove('playing')
-      }
-    })
+    //   if (currentDiv) {
+    //     currentDiv.classList.remove('playing')
+    //   }
+    // })
+
+    // 1. 單一職責原則, 分開播放以及移除動畫效果的 className
+    // 2. 命名清楚且簡單化
+    // 3. 使用 css transitionend 事件觸發移除效果
+
+    function playAudio(e) {
+      const audioKey = e.which
+      const audio = document.querySelector(`audio[data-key="${audioKey}"]`)
+      const key = document.querySelector(`div[data-key="${audioKey}"]`)
+      if (!audio) return
+      key.classList.add('playing')
+      audio.currentTime = 0
+      audio.play()
+    }
+
+    function removeTransition(e) {
+      if (e.propertyName !== 'transform') return
+      e.target.classList.remove('playing')
+    }
+
+    const keyParentNode = document.querySelector('.keys')
+
+    document.addEventListener('keydown', playAudio)
+    keyParentNode.addEventListener('transitionend', removeTransition)
   </script>
 
 
