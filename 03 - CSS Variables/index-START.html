@@ -26,7 +26,26 @@
   <style>
     /*
       misc styles, nothing to do with CSS variables
+      1. :root 是 CSS 的偽類選擇器(pseudo-class selector)，轉們選擇 HTML 文件的根元素(root element)。
+      2. HTML 文件中的根元素就是 <html>，所以 :root {} 等價於 html {}
+      3. 但是 :root 在 CSS 的優先權較高
     */
+
+    :root {
+      --spacing: 10px;
+      --blur: 10px;
+      --base: #ffc600;
+    }
+
+    .hl {
+      color: var(--base);
+    }
+
+    img {
+      padding: var(--spacing);
+      background-color: var(--base);
+      filter: blur(var(--blur));
+    }
 
     body {
       text-align: center;
@@ -47,6 +66,7 @@
   </style>
 
   <script>
+    /* 第一次寫法
     const image = document.querySelector('img')
     const spacing = document.querySelector('#spacing')
     const blur = document.querySelector('#blur')
@@ -78,6 +98,43 @@
     blur.addEventListener('input', inputChangeBlur)
 
     initState()
+    */
+
+
+    /*
+    1. 但是 document.documentElement.style.setProperty() 這邊可以拿來使用，提升效能 (特別適用於需要即時變更 UI 且影響範圍較廣的情境，例如主題變更、動態樣是調整等)
+      1.1 只改變需要變動的 CSS 變數 (不是透過改變 style 屬性，避免不必要的重繪與回流)
+      1.2 
+        1.2.1 讓瀏覽器更有效的處理樣式變更 (CSS 變數是在瀏覽器的 CSS 層級處理，不是改變 DOM 結構，因此瀏覽器可以更高效應用變化)
+        1.2.2 整個頁面可以透過 CSS 變數的變更來即時更新樣式，而無須遍歷所有相關的 DOM 元素
+      1.3 降低 JavaScript 操作的影響
+      1.4 CSS 變數可以讓樣式動態變更更簡潔
+      1.5 減少 Layout Thrashing (布局抖動)
+        1.5.1 Layout Thrashing 指的是頻繁的讀取與寫入 DOM 屬性 (例如 offsetWidth) 的操作交錯進行，導致瀏覽器不得不頻繁重新計算佈局，影響效能。
+        1.5.2 但 document.documentElement.style.setProperty() 主要影像 CSS 層級的變數，不涉及即時的 DOM 屬性讀取，因此更能減少這類的效能問題
+
+    結論: (*** CSS 的東西能在 CSS 層級改就是最好的 ***)
+    使用 document.documentElement.style.setProperty() 來動態調整 CSS 變數，能夠:
+    1. ✅ 更高效地應用樣式變更
+    2. ✅ 減少 DOM 操作，降低重繪與回流
+    3. ✅ 讓變更影響所有使用該變數的元素，減少程式碼重複
+    4. ✅ 避免 Layout Thrashing，提高渲染效能
+
+    因此，這種方式確實是更好的效能優化策略，特別適用於 需要即時變更 UI 且影響範圍較廣的情境（如主題變更、動態樣式調整等）。 🚀
+    */
+
+    const root = document.documentElement;
+    const controls = document.querySelector('.controls')
+
+    function handleChangeCSSVariable(e) {
+      const suffix = e.target.dataset.sizing || ''
+      const property = `--${e.target.name}`
+      root.style.setProperty(property, e.target.value + suffix)
+    }
+
+    controls.addEventListener('input', handleChangeCSSVariable)
+
+    // 解答是掛在每個 input 上，還能使用 this 來代替 e.target ，因為我是用 event delegate 所以必須使用 e.target 不然只會拿到 delegate 掛載的元素
   </script>
 
 </body>
