@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Scoped CSS Variables and JS</title>
   <link rel="icon" href="https://fav.farm/🔥" />
 </head>
+
 <body>
   <h2>Update CSS Variables with <span class='hl'>JS</span></h2>
 
@@ -22,7 +24,6 @@
   <img src="https://source.unsplash.com/7bwQXzbF6KE/800x500">
 
   <style>
-
     /*
       misc styles, nothing to do with CSS variables
     */
@@ -46,7 +47,39 @@
   </style>
 
   <script>
+    const image = document.querySelector('img')
+    const spacing = document.querySelector('#spacing')
+    const blur = document.querySelector('#blur')
+    const base = document.querySelector('#base')
+    const title = document.querySelector('.hl')
+
+    function changeBaseColor(e) {
+      image.style.backgroundColor = e.target.value
+      title.style.color = base.value
+    }
+
+    function inputChangeSpacing(e) {
+      image.style.padding = `${e.target.value}px`
+    }
+
+    function inputChangeBlur(e) {
+      image.style.filter = `blur(${e.target.value}px)`
+    }
+
+    function initState() {
+      image.style.backgroundColor = base.value
+      title.style.color = base.value
+      image.style.padding = `${spacing.value}px`
+      image.style.filter = `blur(${blur.value}px)`
+    }
+
+    base.addEventListener('change', changeBaseColor)
+    spacing.addEventListener('input', inputChangeSpacing)
+    blur.addEventListener('input', inputChangeBlur)
+
+    initState()
   </script>
 
 </body>
+
 </html>
