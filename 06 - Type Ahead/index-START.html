@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Type Ahead 👀</title>
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="https://fav.farm/🔥" />
 </head>
+
 <body>
 
   <form class="search-form">
@@ -15,9 +17,58 @@
       <li>or a state</li>
     </ul>
   </form>
-<script>
-const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+  <script>
+    const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
 
-</script>
+    const suggestions = document.querySelector('.suggestions')
+    const searchInput = document.querySelector('.search')
+    let cityList = []
+
+    async function getEndpointData() {
+      const response = await fetch(endpoint)
+      const data = await response.json()
+      return data
+    }
+
+    function renderFilterCityList() {
+      const currentStr = searchInput.value;
+      const regexp = new RegExp(currentStr, 'gi')
+
+      while (suggestions.firstChild) {
+        suggestions.removeChild(suggestions.firstChild)
+      }
+
+      const filterCityList = cityList.filter(cityInfo => regexp.test(cityInfo.city) || regexp.test(cityInfo.state))
+
+      filterCityList.forEach(i => {
+        const li = document.createElement('li')
+        const p = document.createElement('p')
+        const population = document.createElement('p')
+
+        const content = i.city + ', ' + i.state
+        const highlightContent = content.replace(regexp, prev => `<mark class='hl'>${prev}</mark>`)
+
+        p.innerHTML = highlightContent
+        population.innerHTML = i.population
+
+        li.append(p, population)
+        suggestions.append(li)
+      })
+    }
+
+    // 如果使用匿名函式不要用 this 來去拿
+    async function handleFilterRender() {
+      if (!cityList.length) {
+        cityList = await getEndpointData()
+      }
+
+      renderFilterCityList()
+    }
+
+    searchInput.addEventListener('input', handleFilterRender)
+
+
+  </script>
 </body>
+
 </html>
