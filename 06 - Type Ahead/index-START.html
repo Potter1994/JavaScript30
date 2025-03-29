@@ -38,8 +38,42 @@
         suggestions.removeChild(suggestions.firstChild)
       }
 
+
+      /* 修正1. 這邊可以抽出一個 findMatches 可以之後共用，且更清晰
+      function findMatches(wordToMatch, cities) {
+        return cities.filter(place => {
+          // here we need to figure out if the city or state matches what was searched
+          const regex = new RegExp(wordToMatch, 'gi');
+          return place.city.match(regex) || place.state.match(regex)
+        });
+      }
+      */
       const filterCityList = cityList.filter(cityInfo => regexp.test(cityInfo.city) || regexp.test(cityInfo.state))
 
+      /* 修正2. 這邊是在對後面數字做位數的逗號，我沒補上去就不加了
+      function numberWithCommas(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      }
+      */
+
+      /* 修正3. 我自己都用到修改 innerHTML 了，應該就不用去跑無謂的 while(suggestions.firstChild) 去一個一個刪除了，直接整個 HTML 換掉即可
+      
+      function displayMatches() {
+        const matchArray = findMatches(this.value, cities);
+        const html = matchArray.map(place => {
+          const regex = new RegExp(this.value, 'gi');
+          const cityName = place.city.replace(regex, `<span class="hl">${this.value}</span>`);
+          const stateName = place.state.replace(regex, `<span class="hl">${this.value}</span>`);
+          return `
+            <li>
+              <span class="name">${cityName}, ${stateName}</span>
+              <span class="population">${numberWithCommas(place.population)}</span>
+            </li>
+          `;
+        }).join('');
+        suggestions.innerHTML = html;
+      }
+      */
       filterCityList.forEach(i => {
         const li = document.createElement('li')
         const p = document.createElement('p')
