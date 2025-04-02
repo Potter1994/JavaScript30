@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Hold Shift to Check Multiple Checkboxes</title>
   <link rel="icon" href="https://fav.farm/🔥" />
 </head>
+
 <body>
   <style>
-
     html {
       font-family: sans-serif;
       background: #ffc600;
@@ -18,7 +19,7 @@
       margin: 50px auto;
       background: white;
       border-radius: 5px;
-      box-shadow: 10px 10px 0 rgba(0,0,0,0.1);
+      box-shadow: 10px 10px 0 rgba(0, 0, 0, 0.1);
     }
 
     .item {
@@ -31,7 +32,7 @@
       border-bottom: 0;
     }
 
-    input:checked + p {
+    input:checked+p {
       background: #F9F9F9;
       text-decoration: line-through;
     }
@@ -45,13 +46,13 @@
       padding: 20px;
       transition: background 0.2s;
       flex: 1;
-      font-family:'helvetica neue';
+      font-family: 'helvetica neue';
       font-size: 20px;
       font-weight: 200;
       border-left: 1px solid #D1E2FF;
     }
   </style>
-   <!--
+  <!--
    The following is a common layout you would see in an email client.
 
    When a user clicks a checkbox, holds Shift, and then clicks another checkbox a few rows down, all the checkboxes inbetween those two checkboxes should be checked.
@@ -96,7 +97,62 @@
     </div>
   </div>
 
-<script>
-</script>
+  <script>
+    // 1. Shift 是否按著
+    // 2. Shift + 勾選會將當下勾選及以下的 checkbox 都打勾
+
+    const inbox = document.querySelector('.inbox')
+    const inputList = [...inbox.querySelectorAll('input')]
+    // let isPressShift = false;
+
+    // function keyboardDetect(e) {
+    //   if (e.keyCode !== 16) return;
+    //   if (e.type === 'keydown') { isPressShift = true }
+    //   if (e.type === 'keyup') { isPressShift = false }
+    // }
+
+    // function handleShiftClick(e) {
+    //   if (!isPressShift) return;
+    //   const currentIndex = inputList.indexOf(e.target);
+
+    //   inputList.forEach((input, index) => {
+    //     if ((index < currentIndex + 1) || !e.target.checked) return;
+
+    //     input.checked = true;
+    //   })
+    // }
+
+    // click event 可以直接偵測有沒有 e.shiftKey
+    // document.addEventListener('keydown', keyboardDetect)
+    // document.addEventListener('keyup', keyboardDetect)
+    // inbox.addEventListener('change', handleShiftClick) 這也應該取名為 HandleShiftChange 才對
+
+    /* 解答寫法 */
+    // let lastCheckbox 我不太懂多這個用意在哪
+
+    function handleClick(e) {
+      // closure 所以每次這個 function 執行時 isBetween 都是 false 起手
+      let isBetween = false
+      if (e.shiftKey && this.checked) {
+        inputList.forEach(input => {
+          console.log(input)
+          if (input === this) {
+            isBetween = !isBetween
+            console.log('Starting to check them in between!');
+          }
+
+          if (isBetween) {
+            input.checked = true
+          }
+        })
+      }
+    }
+
+    inputList.forEach((input) => {
+      input.addEventListener('click', handleClick)
+    })
+
+  </script>
 </body>
+
 </html>
