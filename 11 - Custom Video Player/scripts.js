@@ -12,20 +12,37 @@ let isMouseDown = false;
 video.volume = volumeInput.value;
 const { duration } = video;
 
-function handleVideoPlay() {
-  if (video.paused) {
-    video.play();
-  } else {
-    video.pause();
-  }
+// function handleVideoPlay() {
+//   if (video.paused) {
+//     video.play();
+//   } else {
+//     video.pause();
+//   }
+// }
+
+// 1. adjust namespace & use string to method call
+function togglePlay() {
+  const method = video.paused ? "play" : "pause";
+  video[method]();
 }
 
-function handleVolume() {
-  video.volume = this.value;
+// 2. lose pause icon
+function updateIcon() {
+  const currentIcon = video.paused ? "►" : "||";
+  playButton.textContent = currentIcon;
 }
 
-function handleSpeedRate() {
-  video.playbackRate = this.value;
+// function handleVolume() {
+//   video.volume = this.value;
+// }
+
+// function handleSpeedRate() {
+//   video.playbackRate = this.value;
+// }
+
+// 3. use string to method call
+function handleRangeUpdate() {
+  video[this.name] = this.value;
 }
 
 function handleDragProgress(e) {
@@ -48,12 +65,15 @@ function calculateProgress() {
   progressBar.style.flexBasis = `${progressPercent}%`;
 }
 
-playButton.addEventListener("click", handleVideoPlay);
-video.addEventListener("click", handleVideoPlay);
+playButton.addEventListener("click", togglePlay);
+
+video.addEventListener("pause", updateIcon);
+video.addEventListener("play", updateIcon);
+video.addEventListener("click", togglePlay);
 video.addEventListener("timeupdate", calculateProgress);
 
-volumeInput.addEventListener("input", handleVolume);
-speedRateInput.addEventListener("input", handleSpeedRate);
+volumeInput.addEventListener("input", handleRangeUpdate);
+speedRateInput.addEventListener("input", handleRangeUpdate);
 
 progress.addEventListener("mousedown", () => {
   isMouseDown = true;
