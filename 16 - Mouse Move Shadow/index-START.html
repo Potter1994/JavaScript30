@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Mouse Shadow</title>
   <link rel="icon" href="https://fav.farm/🔥" />
 </head>
+
 <body>
 
   <div class="hero">
@@ -12,30 +14,67 @@
   </div>
 
   <style>
-  html {
-    color: black;
-    font-family: sans-serif;
-  }
+    html {
+      color: black;
+      font-family: sans-serif;
+    }
 
-  body {
-    margin: 0;
-  }
+    body {
+      margin: 0;
+    }
 
-  .hero {
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: black;
-  }
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: black;
+    }
 
-  h1 {
-    text-shadow: 10px 10px 0 rgba(0,0,0,1);
-    font-size: 100px;
-  }
+    h1 {
+      text-shadow: 10px 10px 0 rgba(26, 255, 19, 0.7), 10px 10px 0 rgba(0, 195, 255, 0.7), 10px 10px 0 rgba(255, 0, 170, 0.7), 10px 10px 0 rgba(1, 5, 255, 0.7);
+      font-size: 100px;
+    }
   </style>
+  <script>
+    const h1 = document.querySelector('h1')
+    let middleWidth = (window.innerWidth / 2).toFixed(0)
+    let middleHeight = (window.innerHeight / 2).toFixed(0)
 
-<script>
-</script>
+
+    function changeTextShadow(e) {
+      const greenX = (e.y - middleHeight) / 2
+      const greenY = (middleWidth - e.x) / 2
+
+      const blueX = greenX * -1
+      const blueY = greenY * -1
+
+      // const blueX = (middleHeight - e.y) / 2
+      // const blueY = (e.x - middleWidth) / 2
+
+      // 1. 其實只需要乘上 -1 就能往反方向了
+
+      const downDirectionY = greenX
+      const leftDirxtionX = greenY
+      const rightDirxtionX = blueY
+
+      const shadowValue = `
+      ${greenX}px ${greenY}px 0 rgba(26, 255, 19, 0.7), 
+      ${leftDirxtionX}px ${downDirectionY}px 0 rgba(0, 195, 255, 0.7), 
+      ${rightDirxtionX}px ${downDirectionY}px 0 rgba(255, 0, 170, 0.7), 
+      ${blueX}px ${blueY}px 0 rgba(1, 5, 255, 0.7)
+      `
+      h1.style.textShadow = shadowValue
+    }
+
+    function handleResizeCalculateMiddle() {
+      middleWidth = (window.innerWidth / 2).toFixed(0)
+      middleHeight = (window.innerHeight / 2).toFixed(0)
+    }
+
+    document.addEventListener('mousemove', changeTextShadow)
+    window.addEventListener('resize', handleResizeCalculateMiddle)
+  </script>
 </body>
+
 </html>
