@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>JS Reference VS Copy</title>
   <link rel="icon" href="https://fav.farm/🔥" />
 </head>
+
 <body>
 
   <script>
@@ -30,8 +32,21 @@
     // one way
 
     // or create a new array and concat the old one in
+    const concatPlayers = [].concat(players)
+    const arrayFromPlayers = Array.from(players)
 
     // or use the new ES6 Spread
+    const spredPlayers = [...players]
+
+    concatPlayers[0] = 'concatPlayers'
+    arrayFromPlayers[0] = 'arrayFromPlayers'
+    spredPlayers[0] = 'spredPlayers'
+
+    console.log(players)
+    console.log(concatPlayers)
+    console.log(arrayFromPlayers)
+    console.log(spredPlayers)
+    console.clear()
 
     // now when we update it, the original one isn't changed
 
@@ -40,7 +55,11 @@
     // with Objects
     const person = {
       name: 'Wes Bos',
-      age: 80
+      age: 80,
+      social: {
+        twitter: '@wesbos',
+        facebook: 'wesbos.developer',
+      }
     };
 
     // and think we make a copy:
@@ -48,10 +67,17 @@
     // how do we take a copy instead?
 
     // We will hopefully soon see the object ...spread
+    const spreadPerson = {
+      ...person,
+      social: { ...person.social }
+    }
+
+    console.log(spreadPerson.social === person.social)
 
     // Things to note - this is only 1 level deep - both for Arrays and Objects. lodash has a cloneDeep method, but you should think twice before using it.
 
   </script>
 
 </body>
+
 </html>
