@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Videos</title>
   <link rel="icon" href="https://fav.farm/🔥" />
 </head>
+
 <body>
   <ul class="videos">
     <li data-time="5:43">
@@ -182,7 +184,61 @@
       Video 58
     </li>
   </ul>
-<script>
-</script>
+  <script>
+    const timeNode = [...document.querySelectorAll('li')]
+    // 1. 全轉成秒數是最快的
+    // 2. 使用 FP 轉換可以更清晰且好看
+    const seconds = timeNode
+      // 先轉換成 timeCode ['1:56', '4:04', ...]
+      .map(i => i.dataset.time)
+      .map(i => {
+        // 將字串使用 split(':') 轉換成陣列，在使用 map 將字串轉換為數字
+        // 使用展開語法清晰命名拿到
+        // parseFloat 才能將 04 這種數字正確轉換
+        const [minutes, second] = i.split(':').map(parseFloat)
+        return (minutes * 60) + second
+      })
+      .reduce((prev, curr) => prev + curr, 0)
+
+    // 使用秒鐘餘數去慢慢算
+    let secondsLeft = seconds
+
+    const hours = Math.floor(secondsLeft / 3600)
+    secondsLeft %= 3600
+
+    const minutes = Math.floor(secondsLeft / 60)
+    secondsLeft %= 60
+
+    console.log(hours, minutes, secondsLeft)
+
+
+    // 我寫的屎
+    // const result = timeNode.reduce((prev, curr) => {
+    //   let calculateResult = ''
+    //   const dataTime = curr.dataset.time
+    //   const dataTimeArray = dataTime.split(':')
+    //   const prevTimeArray = prev.split(':')
+
+    //   while (dataTimeArray.length || prevTimeArray.length) {
+    //     // console.log(calculateResult)
+    //     const dataTimeNum = parseInt(dataTimeArray.pop()) || 0
+    //     const prevTimeNum = parseInt(prevTimeArray.pop()) || 0
+    //     const sumTime = dataTimeNum + prevTimeNum
+    //     calculateResult = calculateResult.length ? `${sumTime}:${calculateResult}` : `${sumTime}`
+    //   }
+
+
+    //   return calculateResult
+    // }, '')
+
+    // const [minutes, seconds] = result.split(':')
+    // const resultSec = parseInt(seconds) % 60
+    // const resultMin = (parseInt(minutes) % 60) + Math.floor(parseInt(seconds) / 60)
+
+    // console.log(resultSec)
+    // console.log(resultMin)
+    // console.log(Math.floor(parseInt(minutes) / 60))
+  </script>
 </body>
+
 </html>
