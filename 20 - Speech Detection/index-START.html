@@ -1,20 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Speech Detection</title>
   <link rel="icon" href="https://fav.farm/🔥" />
 </head>
+
 <body>
 
   <div class="words" contenteditable>
   </div>
 
-<script>
-  window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  <script>
+    const words = document.querySelector('.words')
+    window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
+    navigator.mediaDevices.getUserMedia({ video: false, audio: true })
 
-</script>
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'zh-TW'
+
+    // 能否一直有新的 result，否則為 single result
+    recognition.continuous = true
+
+    // 是否返回臨時結果，否則只返回最終結果
+    recognition.interimResults = true
+
+    recognition.addEventListener('result', (e) => {
+      // e.results 是 {} 這樣的 ✅ Symbol.iterator 所以可以轉成陣列
+      // ❌ 純物件就不行喔 \u2705
+      const transcript = [...e.results]
+        .filter((i, index) => index === e.resultIndex)
+        .map(i => i[0])
+        .map(i => i.transcript)
+        .join('')
+
+      const poolscript = transcript.replace(/大便/gi, '💩')
+      const p = document.querySelector(`.active-${e.resultIndex}`)
+
+      if (!p) {
+        const p = document.createElement('p')
+        p.classList.add(`active-${e.resultIndex}`)
+        words.append(p)
+      } else {
+        p.textContent = poolscript
+      }
+    })
+
+    recognition.start();
+  </script>
 
 
   <style>
@@ -34,7 +69,7 @@
       margin: 50px auto;
       background: white;
       border-radius: 5px;
-      box-shadow: 10px 10px 0 rgba(0,0,0,0.1);
+      box-shadow: 10px 10px 0 rgba(0, 0, 0, 0.1);
       padding: 1rem 2rem 1rem 5rem;
       background: -webkit-gradient(linear, 0 0, 0 100%, from(#d9eaf3), color-stop(4%, #fff)) 0 4px;
       background-size: 100% 3rem;
@@ -59,4 +94,5 @@
   </style>
 
 </body>
+
 </html>
