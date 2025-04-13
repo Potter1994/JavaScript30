@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Click and Drag</title>
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="https://fav.farm/🔥" />
 </head>
+
 <body>
   <div class="items">
     <div class="item item1">01</div>
@@ -35,8 +37,44 @@
     <div class="item item25">25</div>
   </div>
 
-<script>
-</script>
+  <script>
+    const items = document.querySelector('.items')
+    let isDown = false
+    let startX = 0;
+    let scrollLeft = 0;
 
-  </body>
+    // 1. 在點下去時將狀態切換
+    // 第一擊的 X 及 scrollLeft
+    function handleMouseDown(e) {
+      isDown = true
+      items.classList.add('active')
+      startX = e.clientX
+      scrollLeft = items.scrollLeft
+    }
+
+    function handleMouseUp() {
+      isDown = false
+      items.classList.remove('active')
+    }
+
+    // 2. 計算移動 (第一擊的 startX 跟 move 的 clientX)
+    // 最後將 items.scrollLeft = 第一擊的 scrollLeft + walk
+    function handleMouseDrag(e) {
+      if (!isDown) return;
+
+      const walk = startX - e.clientX
+      items.scrollLeft = scrollLeft + walk * 3
+    }
+
+    // 1. 控制現在滑鼠左鍵是否點著
+    items.addEventListener('mousedown', handleMouseDown)
+    items.addEventListener('mouseup', handleMouseUp)
+    items.addEventListener('mouseleave', handleMouseUp)
+
+    // 2. mouse drag 控制
+    items.addEventListener('mousemove', handleMouseDrag)
+  </script>
+
+</body>
+
 </html>
