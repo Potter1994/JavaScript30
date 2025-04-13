@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Understanding JavaScript's Capture</title>
   <link rel="icon" href="https://fav.farm/🔥" />
 </head>
+
 <body class="bod">
 
   <div class="one">
@@ -14,36 +16,106 @@
     </div>
   </div>
 
-<style>
-  html {
-    box-sizing: border-box;
-  }
+  <style>
+    html {
+      box-sizing: border-box;
+    }
 
-  *, *:before, *:after {
-    box-sizing: inherit;
-  }
+    *,
+    *:before,
+    *:after {
+      box-sizing: inherit;
+    }
 
-  div {
-    width: 100%;
-    padding: 100px;
-  }
+    div {
+      width: 100%;
+      padding: 100px;
+    }
 
-  .one {
-    background: thistle;
-  }
+    .one {
+      background: thistle;
+    }
 
-  .two {
-    background: mistyrose;
-  }
+    .two {
+      background: mistyrose;
+    }
 
-  .three {
-    background: coral;
-  }
-</style>
+    .three {
+      background: coral;
+    }
+  </style>
 
-<button></button>
-<script>
+  <button></button>
+  <script>
+    // const one = document.querySelector('.one')
+    // const two = document.querySelector('.two')
+    // const three = document.querySelector('.three')
 
-</script>
+    // function printCapture() {
+    //   console.log('Capture: ', this.className)
+    // }
+
+    // function printBubbling() {
+    //   console.log('Bubbling: ', this.className)
+    // }
+
+    // one.addEventListener('click', printCapture, true)
+    // one.addEventListener('click', printBubbling, false)
+    // two.addEventListener('click', printCapture, true)
+    // two.addEventListener('click', printBubbling, false)
+    // three.addEventListener('click', printCapture, true)
+    // three.addEventListener('click', printBubbling, false)
+
+    /*
+    通常這三種寫法
+    addEventListener(type, listener)
+    addEventListener(type, listener, useCapture)
+    addEventListener('event', callback, options?)
+
+    1. useCapture => boolean, 預設為 false "bubbling 階段"觸發, 如果為 true 則 "capture 階段" 觸發
+
+    2. 這個 options 有幾個 property 可以使用
+
+    - once => boolean 如果為 true listener 在調用後自動移除
+
+    - capture => boolean, true 表示 listener 會在該類型事件的"capture 階段"傳播到時觸發, false 即為在 "bubbling 階段"觸發
+
+    - passive => boolean, 為 true 時, listener 永遠不會調用 preventDefault(), 如果使用會拋出控制台警告
+
+    - signal => AbortSignal, 該 AbortSignal 的 abort() 方法被調用時，監聽器會被移除
+
+    ### e.stopPropagation()
+    重點修正，他不是阻止事件冒泡，更精確是指阻止後續傳遞
+    會常說是阻止事件冒泡，是因為我們一般使用 addEventListener(type, listener, useCapture) useCapture 預設為 false (bubbling 階段觸發)
+    若此時 useCapture 為 true 就會在觸發第一個 capture 就停止
+
+    🧠 直覺記法：
+    stopPropagation() 👉 事件不再往下傳、也不再冒上去
+
+    preventDefault() 👉 不讓瀏覽器做它原本想做的事
+
+    stopImmediatePropagation() 👉 連同節點上其他 listener 一起掰掰
+
+    */
+    const divs = document.querySelectorAll('div')
+    const button = document.querySelector('button')
+
+    function printText(e) {
+      // e.stopPropagation() 如果是在 capture 就會只觸發監聽最外層的，如果是在 bubbling 就會只觸發監聽你所點擊之中最內層的
+      console.log(this.className)
+    }
+
+    // capture 由 tree 高層 node 層層往下觸發，反之 bubbling 則在 capture 到所點選 node 後反回觸發
+    // one → two → three（capture）→ three → two → one（bubble）
+    divs.forEach(div => {
+      // useCapture = true, capture 階段觸發
+      // 沒有給預設 useCapture = false, bubbling 階段觸發
+      div.addEventListener('click', printText)
+    })
+
+    button.addEventListener('click', () => { console.log('click') }, { once: true })
+
+  </script>
 </body>
+
 </html>

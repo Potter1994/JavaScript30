@@ -10,7 +10,9 @@ body {
   margin: 0;
 }
 
-*, *:before, *:after {
+*,
+*:before,
+*:after {
   box-sizing: inherit;
 }
 
@@ -38,7 +40,7 @@ header {
 h1 {
   color: white;
   font-size: 7vw;
-  text-shadow: 3px 4px 0 rgba(0,0,0,0.2);
+  text-shadow: 3px 4px 0 rgba(0, 0, 0, 0.2);
 }
 
 nav {
@@ -52,7 +54,7 @@ nav {
 
 nav ul {
   margin: 0;
-  padding:0;
+  padding: 0;
   list-style: none;
   display: flex;
 }
@@ -85,4 +87,20 @@ nav a {
   color: white;
   transition: all 0.2s;
   text-transform: uppercase;
+}
+
+/* 控制 fixed 後相關的一些 CSS 變化，更好看 */
+.fixed-env nav {
+  position: fixed;
+  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* 控制 logo 顯示 */
+.fixed-env li.logo {
+  max-width: 150px;
+}
+
+/* 有放大文件的效果，以後可以有類似的應用 */
+body.fixed-env .site-wrap {
+  transform: scale(1);
 }
