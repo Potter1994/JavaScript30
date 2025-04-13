@@ -46,21 +46,27 @@
     const speakButton = document.querySelector('#speak');
     const stopButton = document.querySelector('#stop');
 
+    // 初始值設定
+    options.forEach(input => {
+      msg[input.name] = input.value
+    })
+
 
     // 注意其中一點， msg.voice 需要給的是整個 voice 的 object 內容
     function handleSpeak() {
-      const [selectedOption] = voicesDropdown.selectedOptions
-      const seletedVoice = voices.find(i => i.name === selectedOption.value)
-      msg.voice = seletedVoice
       options.forEach(input => {
         msg[input.name] = input.value
       })
 
-      synth.speak(msg)
+      toggle()
     }
 
-    function cancelSpeak() {
+    // #1. 解答我應該將 sepak 跟 cancel 寫在一個 function 去控制會更好
+    function toggle(startOver = true) {
       synth.cancel()
+      if (startOver) {
+        synth.speak(msg)
+      }
     }
 
     // getVoices() 可能回傳空陣列，因為語音清單是"非同步載入"，必須監聽 voiceschanged 確保語音清單載入完成
@@ -74,9 +80,18 @@
       })
     }
 
+    // #2. 新增在選擇聲音後就撥放
+    function setVoice() {
+      const [selectedOption] = voicesDropdown.selectedOptions
+      const seletedVoice = voices.find(i => i.name === selectedOption.value)
+      msg.voice = seletedVoice
+      toggle()
+    }
+
     synth.addEventListener('voiceschanged', setVoicesList)
     speakButton.addEventListener('click', handleSpeak)
-    stopButton.addEventListener('click', cancelSpeak)
+    voicesDropdown.addEventListener('change', setVoice)
+    stopButton.addEventListener('click', () => toggle(false))
   </script>
 
 </body>
