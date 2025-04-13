@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Speech Synthesis</title>
@@ -7,36 +8,77 @@
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="https://fav.farm/🔥" />
 </head>
+
 <body>
 
-    <div class="voiceinator">
+  <div class="voiceinator">
 
-      <h1>The Voiceinator 5000</h1>
+    <h1>The Voiceinator 5000</h1>
 
-      <select name="voice" id="voices">
-        <option value="">Select A Voice</option>
-      </select>
+    <select name="voice" id="voices">
+      <!-- <option value="">Select A Voice</option> -->
+    </select>
 
-      <label for="rate">Rate:</label>
-      <input name="rate" type="range" min="0" max="3" value="1" step="0.1">
+    <label for="rate">Rate:</label>
+    <input name="rate" type="range" min="0" max="3" value="1" step="0.1">
 
-      <label for="pitch">Pitch:</label>
+    <label for="pitch">Pitch:</label>
 
-      <input name="pitch" type="range" min="0" max="2" step="0.1">
-      <textarea name="text">Hello! I love JavaScript 👍</textarea>
-      <button id="stop">Stop!</button>
-      <button id="speak">Speak</button>
+    <input name="pitch" type="range" min="0" max="2" step="0.1">
+    <textarea name="text">Hello! I love JavaScript 👍</textarea>
+    <button id="stop">Stop!</button>
+    <button id="speak">Speak</button>
 
-    </div>
+  </div>
 
-<script>
-  const msg = new SpeechSynthesisUtterance();
-  let voices = [];
-  const voicesDropdown = document.querySelector('[name="voice"]');
-  const options = document.querySelectorAll('[type="range"], [name="text"]');
-  const speakButton = document.querySelector('#speak');
-  const stopButton = document.querySelector('#stop');
-</script>
+  <script>
+    // https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance
+    // SpeechSynthesisUtterance 建立控制發聲器的實例，可控制 speech service 怎麼去讀的資訊 (e.g., language, pitch and valume)
+    const msg = new SpeechSynthesisUtterance();
+
+    // https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesis/speak
+    // speechSynthesis speak() method 可以增加 utterance queue, 依序 spoken
+    // SpeechSynthesis 不允許 new 實例，必須直接使用 window.speechSynthesis
+    const synth = window.speechSynthesis
+    let voices = [];
+    const voicesDropdown = document.querySelector('[name="voice"]');
+    const options = document.querySelectorAll('[type="range"], [name="text"]');
+    const speakButton = document.querySelector('#speak');
+    const stopButton = document.querySelector('#stop');
+
+
+    // 注意其中一點， msg.voice 需要給的是整個 voice 的 object 內容
+    function handleSpeak() {
+      const [selectedOption] = voicesDropdown.selectedOptions
+      const seletedVoice = voices.find(i => i.name === selectedOption.value)
+      msg.voice = seletedVoice
+      options.forEach(input => {
+        msg[input.name] = input.value
+      })
+
+      synth.speak(msg)
+    }
+
+    function cancelSpeak() {
+      synth.cancel()
+    }
+
+    // getVoices() 可能回傳空陣列，因為語音清單是"非同步載入"，必須監聽 voiceschanged 確保語音清單載入完成
+    function setVoicesList() {
+      voices.push(...synth.getVoices())
+      voices.forEach(i => {
+        const option = document.createElement('option')
+        option.value = i.name
+        option.textContent = i.name
+        voicesDropdown.append(option)
+      })
+    }
+
+    synth.addEventListener('voiceschanged', setVoicesList)
+    speakButton.addEventListener('click', handleSpeak)
+    stopButton.addEventListener('click', cancelSpeak)
+  </script>
 
 </body>
+
 </html>
