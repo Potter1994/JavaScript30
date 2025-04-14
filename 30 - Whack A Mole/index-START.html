@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Whack A Mole!</title>
@@ -7,6 +8,7 @@
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="https://fav.farm/🔥" />
 </head>
+
 <body>
 
   <h1>Whack-a-mole! <span class="score">0</span></h1>
@@ -33,11 +35,132 @@
     </div>
   </div>
 
-<script>
-  const holes = document.querySelectorAll('.hole');
-  const scoreBoard = document.querySelector('.score');
-  const moles = document.querySelectorAll('.mole');
+  <script>
+    const holes = document.querySelectorAll('.hole');
+    const scoreBoard = document.querySelector('.score');
+    const moles = document.querySelectorAll('.mole');
+    let lastHole;
+    let timeUp = false;
+    let scroe = 0;
 
-</script>
+    function randomTime(max, min) {
+      return Math.round(Math.random() * (max - min) + min)
+    }
+
+    // recursive 去呼叫自己直到拿到 lastHole !== hole
+    function randomHole() {
+      const index = Math.floor(Math.random() * holes.length)
+      const hole = holes[index]
+      if (lastHole === hole) {
+        console.log('Ah nah thats the same one bud')
+        return randomHole()
+      }
+      lastHole = hole
+      return hole
+    }
+
+    // 針對個別 hole 去做 up 的新增移除，可以準確也不用浪費效能跑 forEach
+    // 1. 先拿到 time 跟 hole 如果拿到重複的 hole 會再跑一次 randomHole 直到拿到不同的
+    // 2. 確認拿到 hole 之後新增 up, 然後 setTimeout 時間到達後移除 up
+    // 如果 timeUp 為 false 就再次執行 peep()
+    // 3. 在下面 clickMole 中有做如果先點到 mole 了就提前移除 up
+    function peep() {
+      const time = randomTime(200, 1000)
+      const hole = randomHole()
+      hole.classList.add('up')
+
+      setTimeout(() => {
+        hole.classList.remove('up')
+        if (!timeUp) {
+          peep()
+        }
+      }, time)
+    }
+
+    // 重製基本資訊， call peep 開始
+    function startGame() {
+      scoreBoard.textContent = 0
+      scroe = 0;
+      timeUp = false;
+      peep()
+      setTimeout(() => {
+        timeUp = true;
+      }, 10000)
+    }
+
+    function clickMole(e) {
+      if (!e.isTrusted) return; // cheater!
+      scroe++
+      scoreBoard.textContent = scroe
+      this.parentNode.classList.remove('up')
+    }
+
+    moles.forEach(i => i.addEventListener('click', clickMole))
+
+
+    /* 這是我的答案
+    // 有同一個洞重複的 bug, randomHole 有更簡單的寫法
+    // 可以使用 setimeout 來控制某變數為 true 結束繼續
+    const gameSeconds = 10;
+    let timer;
+    let score = 0;
+
+    function startGame() {
+      const now = Date.now()
+      const endGame = now + gameSeconds * 1000
+      let holeNumber = getHoleNumber()
+      let memoNumber = holeNumber
+      let timeSpeed = getRandomSeconds() * 1000
+
+      timer = setInterval(() => {
+        if (endGame - Date.now() < 0) {
+          clearInterval(timer)
+          holesUp(0)
+          return
+        }
+
+        holesUp(holeNumber)
+
+        holeNumber = getHoleNumber()
+        timeSpeed = getRandomSeconds() * 1000
+      }, timeSpeed)
+
+    }
+
+    function getRandomArbitrary(max, min) {
+      return Math.random() * (max - min) + min
+    }
+
+    function getHoleNumber() {
+      return Math.floor(getRandomArbitrary(1, 7))
+    }
+
+    function getRandomSeconds() {
+      return getRandomArbitrary(0.8, 0.4).toFixed(2)
+    }
+
+    function holesUp(number) {
+      holes.forEach(i => {
+        if (i.classList.contains(`hole${number}`)) {
+          i.classList.add('up')
+        } else {
+          i.classList.remove('up')
+        }
+      })
+    }
+
+    function clickMole(e) {
+      if (!e.isTrusted) return // cheater!
+      this.parentNode.classList.remove('up')
+      score++
+      scoreBoard.textContent = score
+    }
+
+    moles.forEach(i => {
+      i.addEventListener('click', clickMole)
+    })
+    */
+  </script>
 </body>
+
 </html>
