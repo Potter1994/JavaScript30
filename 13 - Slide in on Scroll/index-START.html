@@ -171,19 +171,8 @@
     }
 
     const handleToggleActive = entry => {
-      if (entry.isIntersecting) {
-        if (entry.target.classList.contains('active')) {
-          return
-        }
-
-        entry.target.classList.add('active')
-      } else {
-        if (!entry.target.classList.contains('active')) {
-          return
-        }
-
-        entry.target.classList.remove('active')
-      }
+      const method = entry.isIntersecting ? 'add' : 'remove'
+      entry.target.classList[method]('active')
     }
 
     const callback = (entries, ovserver) => {
