@@ -36,44 +36,28 @@
       font-size: 100px;
     }
   </style>
+
   <script>
     const h1 = document.querySelector('h1')
-    let middleWidth = (window.innerWidth / 2).toFixed(0)
-    let middleHeight = (window.innerHeight / 2).toFixed(0)
-
+    let middleWidth = Math.round(window.innerWidth / 2)
+    let middleHeight = Math.round(window.innerHeight / 2)
 
     function changeTextShadow(e) {
-      const greenX = (e.y - middleHeight) / 2
-      const greenY = (middleWidth - e.x) / 2
+      const directionX = e.clientX - middleWidth
+      const directionY = e.clientY - middleHeight
+      const shadowValue = `${directionX}px ${directionY}px 0 rgba(26, 255, 19, 0.7), 
+      ${directionY}px ${-directionX}px 0 rgba(0, 195, 255, 0.7), 
+      ${-directionY}px ${directionX}px 0 rgba(255, 0, 170, 0.7), 
+      ${-directionX}px ${directionY}px 0 rgba(1, 5, 255, 0.7)`
 
-      const blueX = greenX * -1
-      const blueY = greenY * -1
-
-      // const blueX = (middleHeight - e.y) / 2
-      // const blueY = (e.x - middleWidth) / 2
-
-      // 1. 其實只需要乘上 -1 就能往反方向了
-
-      const downDirectionY = greenX
-      const leftDirxtionX = greenY
-      const rightDirxtionX = blueY
-
-      const shadowValue = `
-      ${greenX}px ${greenY}px 0 rgba(26, 255, 19, 0.7), 
-      ${leftDirxtionX}px ${downDirectionY}px 0 rgba(0, 195, 255, 0.7), 
-      ${rightDirxtionX}px ${downDirectionY}px 0 rgba(255, 0, 170, 0.7), 
-      ${blueX}px ${blueY}px 0 rgba(1, 5, 255, 0.7)
-      `
-      h1.style.textShadow = shadowValue
-    }
-
-    function handleResizeCalculateMiddle() {
-      middleWidth = (window.innerWidth / 2).toFixed(0)
-      middleHeight = (window.innerHeight / 2).toFixed(0)
+      h1.style.setProperty('text-shadow', shadowValue)
     }
 
     document.addEventListener('mousemove', changeTextShadow)
-    window.addEventListener('resize', handleResizeCalculateMiddle)
+    document.addEventListener('resize', () => {
+      middleWidth = Math.round(window.innerWidth / 2)
+      middleHeight = Math.round(window.innerHeight / 2)
+    })
   </script>
 </body>
 
