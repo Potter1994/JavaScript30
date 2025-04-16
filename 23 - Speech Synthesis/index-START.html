@@ -39,6 +39,7 @@
     // https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesis/speak
     // speechSynthesis speak() method 可以增加 utterance queue, 依序 spoken
     // SpeechSynthesis 不允許 new 實例，必須直接使用 window.speechSynthesis
+    // 主要功能是將文字轉換為語音，並透過裝置的喇叭播放出來。​
     const synth = window.speechSynthesis
     let voices = [];
     const voicesDropdown = document.querySelector('[name="voice"]');
