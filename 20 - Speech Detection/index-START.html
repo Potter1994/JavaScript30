@@ -37,15 +37,15 @@
         .join('')
 
       const poolscript = transcript.replace(/大便/gi, '💩')
-      const p = document.querySelector(`.active-${e.resultIndex}`)
+      let p = document.querySelector(`.active-${e.resultIndex}`)
 
       if (!p) {
-        const p = document.createElement('p')
+        p = document.createElement('p')
         p.classList.add(`active-${e.resultIndex}`)
         words.append(p)
-      } else {
-        p.textContent = poolscript
       }
+
+      p.textContent = poolscript || ''
     })
 
     recognition.start();
