@@ -53,9 +53,25 @@
         height: linkCoords.height,
       }
 
-      highlight.style.width = `${coords.width}px`
-      highlight.style.height = `${coords.height}px`
-      highlight.style.transform = `translate(${coords.left}px, ${coords.top}px)`
+      highlight.style.setProperty('width', `${coords.width}px`)
+      highlight.style.setProperty('height', `${coords.height}px`)
+
+
+      /*
+      
+      1. 瀏覽器渲染流程
+        a. top/left：​修改這些屬性會觸發瀏覽器的 重排（Reflow），即重新計算元素的佈局位置，這在元素多或結構複雜的頁面中可能導致效能下降。​
+
+        b. transform: translate()：​這屬於 合成階段（Compositing） 的操作，不會影響元素的實際佈局，因此不會觸發重排，只會觸發 重繪（Repaint），效能開銷較小。​
+
+      2. 硬體加速
+        transform 屬性通常能啟用 GPU 加速，將渲染工作交由 GPU 處理，減輕 CPU 負擔，提升動畫的流暢度。​
+
+      3. 動畫效能
+        在進行動畫時，使用 transform: translate() 能夠提供更高的幀率和更平滑的過渡效果，特別是在移動裝置上。
+      
+      */
+      highlight.style.setProperty('transform', `translate(${coords.left}px, ${coords.top}px)`)
     }
 
     nodeList.forEach(node => {
